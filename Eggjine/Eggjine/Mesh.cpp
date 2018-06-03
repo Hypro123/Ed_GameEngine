@@ -1,0 +1,200 @@
+#include "Mesh.h"
+#include<glCore\gl_core_4_5.h>
+
+Mesh::~Mesh()
+{
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ibo);
+}
+
+void Mesh::initialise(unsigned int vertexCount, const Vertex* verticies, unsigned int indexCount, unsigned int* indicies)
+{
+	assert(vao == 0);
+
+	//gen buffers
+	glGenBuffers(1, &vbo);
+	glGenVertexArrays(1, &vao);
+
+	//bind vertex array, mesh wrapper
+	glBindVertexArray(vao);
+
+	//bind vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	//fill vertex buffer
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), verticies, GL_STATIC_DRAW);
+
+	//enable first element as position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+
+	//bind indicies if there are any
+	if (indexCount != 0)
+	{
+		glGenBuffers(1, &ibo);
+
+		//bind vertex buffer
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+		//fill vertex buffer
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(unsigned int), indicies, GL_STATIC_DRAW);
+
+		//divide by 3 in order to get triangle amount
+		triCount = indexCount / 3;
+	}
+	else
+	{
+		triCount = vertexCount / 3;
+	}
+	//unbind buffers
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Mesh::draw()
+{
+	glBindVertexArray(vao);
+	//indicies or vertiicies
+	if (ibo != 0)
+		glDrawElements(GL_TRIANGLES, 3 * triCount, GL_UNSIGNED_INT, 0);
+	else
+		glDrawArrays(GL_TRIANGLES, 0, 3 * triCount);
+}
+
+void Mesh::drawBox(glm::vec3 center, glm::vec3 extents, glm::vec4 colour, glm::mat4* m)
+{
+	Vertex verts[8];
+	glm::vec3 c = center;
+	
+	//extents
+	glm::vec3 vX(extents.x, 0, 0);
+	glm::vec3 vY(0, extents.y, 0);
+	glm::vec3 vZ(0, 0, extents.z);
+
+	if (m != nullptr)
+	{
+		vX = glm::vec3((*m * glm::vec4(vX, 0)));
+		vY = glm::vec3((*m * glm::vec4(vX, 0)));
+		vZ = glm::vec3((*m * glm::vec4(vX, 0)));
+		c = glm::vec3(glm::vec3((*m)[3]) + c);
+	}
+
+	verts[0].position = glm::vec4(glm::vec3(extents.x / 2, -extents.y / 2, extents.z / 2), 1);
+	verts[1].position = glm::vec4(glm::vec3(extents.x / 2, -extents.y / 2, -extents.z / 2), 1);
+	verts[2].position = glm::vec4(glm::vec3(-extents.x / 2, -extents.y / 2, -extents.z / 2), 1);
+	verts[3].position = glm::vec4(glm::vec3(-extents.x / 2, -extents.y / 2, extents.z / 2), 1);
+	verts[4].position = glm::vec4(glm::vec3(extents.x / 2, extents.y / 2, extents.z / 2), 1);
+	verts[5].position = glm::vec4(glm::vec3(extents.x / 2, extents.y / 2, -extents.z / 2), 1);
+	verts[6].position = glm::vec4(glm::vec3(-extents.x / 2, extents.y / 2, -extents.z / 2), 1);
+	verts[7].position = glm::vec4(glm::vec3(-extents.x / 2, extents.y / 2, extents.z / 2), 1);
+
+	unsigned int indicies[36] = { 
+		0, 1, 2, 2, 0, 3,
+		0, 3, 7, 7, 0, 4,
+		7, 6, 5, 5, 7, 4,
+		3, 7, 2, 2, 7, 6,
+		0, 1, 5, 5, 0, 4,
+		6, 5, 1, 1, 6, 2
+	};
+	initialise(8, verts, 36, indicies);
+}
+
+//incomplete
+void Mesh::drawCylinder(glm::vec3 center, float radius, float height, int segments, glm::vec4 colour, glm::mat4* m)
+{
+	meshData retdat1 = getCircleStruct(glm::vec4(center.x, center.y + height/2, center.z, 1), radius, segments, colour);
+	meshData retdat2 = getCircleStruct(glm::vec4(center.x, center.y + -height/2, center.z, 1), radius, segments, colour);
+
+	unsigned int* indicies = new unsigned int[retdat1.indiciCount + retdat2.indiciCount];
+	unsigned int indCount = retdat1.indiciCount + retdat2.indiciCount ;
+	
+
+	Vertex* verts = new Vertex[retdat1.vertAmount + retdat2.vertAmount];
+	unsigned int vertCount = retdat1.vertAmount + retdat2.vertAmount;
+
+	//indicies
+	for(int i = 0; i < retdat1.indiciCount; i++)
+	{
+		indicies[i] = retdat1.indicies[i];
+	}
+	for(int i = (retdat1.indiciCount); i < indCount; i++)
+	{
+		indicies[i] = retdat2.indicies[i - retdat2.indiciCount] + segments + 1;
+	}
+
+	//verticies
+	for(int i = 0; i < retdat1.vertAmount; i++)
+	{
+		verts[i] = retdat1.v[i];
+	}
+	for(int i = retdat1.vertAmount; i < vertCount; i++)
+	{
+		verts[i] = retdat2.v[i - retdat2.vertAmount];
+	}
+
+	initialise(vertCount, verts, indCount, indicies);
+}
+
+meshData Mesh::getCircleStruct(glm::vec3 center, float radius, int segments, glm::vec4 colour)
+{
+	int vertAmount = segments + 1;
+	Vertex* verts = new Vertex[vertAmount];
+
+	unsigned int* indicies;
+
+	int count = segments * 3 + 1;
+	indicies = new unsigned int[count];
+
+	int tempValue = 0;
+	
+
+
+	for (int i = 0; i < vertAmount; i++)
+	{
+		verts[i].position = glm::vec4(center, 1);
+		verts[i].normal = glm::vec4(0.0f, 0.0f, 0.0f, 1);
+		verts[i].texcoord = glm::vec2(0.0f, 0.0f);
+	}
+
+
+	//initialisation
+	for (int i = 0; i < count; ++i)
+	{
+		indicies[i] = 0;
+	}
+
+	for (int i = 1; i < vertAmount; i++)
+	{
+		verts[i].position = glm::vec4(sinf((2 * glm::pi<float>()) / segments * i) * radius, center.y, cosf((2 * glm::pi<float>()) / segments * i) * radius, 1);
+	}
+
+	//segments(works)
+	for (int i = 1; i < count; i++)
+	{
+		if ((i % 3) == 0)
+		{
+			indicies[i] = 0;
+			tempValue += 2;
+		}
+		else
+		{
+			indicies[i] = (i - tempValue);
+			indicies[i + 1] = indicies[i] + 1;
+		}
+
+		if (indicies[i] > segments)
+			indicies[i] = indicies[1];
+	}
+
+	count--;
+
+	meshData retData;
+	retData.indiciCount = count;
+	retData.indicies = indicies;
+	retData.v = verts;
+	retData.vertAmount = vertAmount;
+
+	return retData;
+}
