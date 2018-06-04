@@ -24,11 +24,17 @@ bool ProjectFile::startup()
 	//	return false;
 	//}
 
+	//if(m_modelTexture.load("../soulspear/soulspear_specular.tga") == false)
+	//{
+	//	printf("texture failed to load\n");
+	//	return false;
+	//}
+
 	//../soulspear/soulspear.obj
 	//../stanford/Bunny.obj
 	if (m_spearMesh.load("../soulspear/soulspear.obj") == false)
 	{
-		printf("SoulSpear Mesh Error!\n");
+		printf("Mesh Error!\n");
 		return false;
 	}
 
@@ -83,7 +89,7 @@ void ProjectFile::update(float deltaTime)
 	fCam->update(deltaTime);
 	m_lTime = glfwGetTime();
 	
-	m_light.direction = glm::vec3(glm::sin(m_lTime * 2), glm::cos(m_lTime * 2), 0);
+	m_light.direction = glm::vec3(glm::sin(m_lTime * 0.2f), glm::cos(m_lTime * 0.2f), 0);
 }
 
 void ProjectFile::draw()
@@ -103,6 +109,9 @@ void ProjectFile::draw()
 
 	//shaders
 	m_shader.bind();
+
+	//m_shader.bindUniform("diffuseTexture", 0);
+	//m_modelTexture.bind(0);
 
 	//binding
 	m_shader.bindUniform("cameraPosition", fCam->getWorldTransform()[3]);

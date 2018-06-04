@@ -35,6 +35,7 @@ protected:
 	//Bunny
 	//aie::OBJMesh m_BunnyMesh;
 	//glm::mat4 m_BunnyTransform;
+	//aie::Texture m_modelTexture;
 
 	//shaders
 	aie::ShaderProgram m_shader;
