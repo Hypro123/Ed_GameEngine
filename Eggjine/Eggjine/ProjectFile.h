@@ -8,6 +8,9 @@
 #include"Shader.h"
 #include"Mesh.h"
 #include"OBJMesh.h"
+#include"Texture.h"
+
+#include"Light.h"
 
 class ProjectFile : public Application
 {
@@ -22,23 +25,30 @@ public:
 	void draw();
 
 protected:
-	//Planetoid* p;
-	//Planetoid* q;
-	//Planetoid* s;
 
 	FlyCamera* fCam;
 
+	//soulspear
+	aie::OBJMesh m_spearMesh;
+	glm::mat4 m_SpearTransform;
+
+	//Bunny
+	//aie::OBJMesh m_BunnyMesh;
+	//glm::mat4 m_BunnyTransform;
+
 	//shaders
 	aie::ShaderProgram m_shader;
-	
-	//bunny
-	aie::OBJMesh m_bunnyMesh;
-	glm::mat4 m_bunnyTransform;
 
 	//object rendering
-	Mesh m_quadmesh;
-	glm::mat4 m_quadtransform;
-	//Mesh m_circle;
+	//Mesh m_quadmesh;
+	//glm::mat4 m_quadtransform;
+	//aie::Texture m_gridTexture;
+
+	float m_lTime;
+	Light m_light;
+
+	//ambient light in scene
+	glm::vec3 ambientLight;
 };
 
 #endif

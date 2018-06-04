@@ -1,5 +1,5 @@
 #include "ProjectFile.h"
-
+#include<iostream>
 
 
 ProjectFile::ProjectFile() {}
@@ -9,8 +9,8 @@ ProjectFile::~ProjectFile() {}
 
 bool ProjectFile::startup()
 {
-	m_shader.loadShader(aie::eShaderStage::VERTEX, "./simple.vert");
-	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "./simple.frag");
+	m_shader.loadShader(aie::eShaderStage::VERTEX, "../shaders/normalmap.vert");
+	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "../shaders/normalmap.frag");
 
 	if (m_shader.link() == false)
 	{
@@ -18,45 +18,57 @@ bool ProjectFile::startup()
 		return false;
 	}
 
-	if (m_bunnyMesh.load("../stanford/Bunny.obj") == false)
+	//if (m_gridTexture.load("../textures/numbered_grid.tga") == false)
+	//{
+	//	printf("Failed to load texture!\n");
+	//	return false;
+	//}
+
+	//../soulspear/soulspear.obj
+	//../stanford/Bunny.obj
+	if (m_spearMesh.load("../soulspear/soulspear.obj") == false)
 	{
-		printf("Bunny mesh Error!\n");
+		printf("SoulSpear Mesh Error!\n");
 		return false;
 	}
 
-	m_bunnyTransform = 
-	{
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	};
+	//if (m_BunnyMesh.load("../stanford/Bunny.obj") == false)
+	//{
+	//	printf("Bunny Mesh Error!\n");
+	//	return false;
+	//}
+
+	//initialise quad
+	//m_quadmesh.initialiseQuad();
 
 	//drawing mesh
-	m_quadtransform = 
+	m_SpearTransform = 
 	{
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	};
-	m_quadmesh.drawBox(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), glm::vec4(1, 1, 1, 1), &m_quadtransform);
-	//m_circle.drawCylinder(glm::vec3(0, 0, 0), 5, 3, 3, glm::vec4(1, 1, 1, 1), &m_quadtransform);
 	
+	//m_BunnyTransform =
+	//{
+	//	1, 0, 0, 0,
+	//	0, 1, 0, 0,
+	//	0, 0, 1, 0,
+	//	0, 0, 0, 1
+	//};
+
+	//material
+
+
+	//light
+	m_light.diffuse = { 1, 0, 1 };
+	m_light.specular = {1, 1, 1};
+	m_light.direction = {-1, -0.5, -1};
+	ambientLight = { 0.75f, 0.75f, 0.75f};
+
 	//camera initialisation
 	fCam = new FlyCamera(window);
-	//planetoid initialisation
-	//p = new Planetoid(glm::mat4(1), glm::vec4(1, 1, 0, 1), 2);
-	//q = new Planetoid(glm::mat4(1), glm::vec4(0, 1, 0, 1), 1);
-	//s = new Planetoid(glm::mat4(1), glm::vec4(0, 0, 1, 1), 0.5f);
-	//set position of planetoids
-	//q->setPosition(glm::vec3(0, 0, -7));
-	//p->setPosition(glm::vec3(0, 0, 5));
-	//s->setPosition(glm::vec3(0, 0, 2.5f));
-
-	//parenting of planetoids in order to create an orbit
-	//q->setParent(p);
-	//s->setParent(q);
 	
 	return true;
 }
@@ -64,40 +76,18 @@ bool ProjectFile::startup()
 void ProjectFile::shutdown()
 {
 	delete fCam;
-	//delete s;
-	//delete q;
-	//delete p;
 }
 
 void ProjectFile::update(float deltaTime)
 {
-	//glm::mat4 rot(1);
-	////rotate around point
-	//rot = glm::rotate(deltaTime * 10, glm::vec3(0, 1, 0));
-	//p->localMatrix = rot * p->localMatrix;
-	////rotate around obj
-	//rot = glm::rotate(deltaTime * 10, glm::vec3(0, 1, 0));
-	//p->localMatrix = p->localMatrix * rot;
-
-	//rot = rot = glm::rotate(deltaTime * 10, glm::vec3(0, 1, 0));
-	//q->localMatrix = rot * q->localMatrix;
-
-	//rot = rot = glm::rotate(deltaTime * 50, glm::vec3(0, 1, 0));
-	//q->localMatrix = q->localMatrix * rot;
-
-	////updating objects
-	//p->updatePlanetoid(deltaTime);
-	//q->updatePlanetoid(deltaTime);
-	//s->updatePlanetoid(deltaTime);
 	fCam->update(deltaTime);
+	m_lTime = glfwGetTime();
+	
+	m_light.direction = glm::vec3(glm::sin(m_lTime * 2), glm::cos(m_lTime * 2), 0);
 }
 
 void ProjectFile::draw()
 {
-	//p->drawPlanetoid();
-	//q->drawPlanetoid();
-	//s->drawPlanetoid();
-
 	aie::Gizmos::addTransform(glm::mat4(1));
 	glm::vec4 white(1);
 	glm::vec4 black(0, 0, 0, 1);
@@ -114,14 +104,21 @@ void ProjectFile::draw()
 	//shaders
 	m_shader.bind();
 
-	auto pvm = fCam->getProjection() * fCam->getView() *  m_quadtransform;
+	//binding
+	m_shader.bindUniform("cameraPosition", fCam->getWorldTransform()[3]);
+
+	m_shader.bindUniform("lightDirection", m_light.direction);
+	m_shader.bindUniform("Ia", ambientLight);
+	m_shader.bindUniform("Id", m_light.diffuse);
+	m_shader.bindUniform("Is", m_light.specular);
+
+	//camera and normal mapping
+	auto pvm = fCam->getProjection() * fCam->getView() *  m_SpearTransform;
 	m_shader.bindUniform("ProjectionViewModel", pvm);
+	m_shader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_SpearTransform)));
 
-	m_quadmesh.draw();
-	//m_circle.draw();
-
-	//draw bunny
-	m_bunnyMesh.draw();
+	m_spearMesh.draw();
+	//m_BunnyMesh.draw();
 
 	aie::Gizmos::draw(fCam->getProjectionView());
 }

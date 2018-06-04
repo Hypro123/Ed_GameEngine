@@ -29,6 +29,14 @@ void Mesh::initialise(unsigned int vertexCount, const Vertex* verticies, unsigne
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
+	// enable second element as normal
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)16);
+
+	// enable third element as texture
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)32);
+
 	//bind indicies if there are any
 	if (indexCount != 0)
 	{
@@ -63,6 +71,62 @@ void Mesh::draw()
 		glDrawArrays(GL_TRIANGLES, 0, 3 * triCount);
 }
 
+void Mesh::initialiseQuad()
+{
+	// check that the mesh is not initialized already
+	assert(vao == 0);
+	// generate buffers
+	glGenBuffers(1, &vbo);
+	glGenVertexArrays(1, &vao);
+	// bind vertex array aka a mesh wrapper
+	glBindVertexArray(vao);
+	// bind vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	// define 6 vertices for 2 triangles
+	Vertex vertices[6];
+	vertices[0].Position = { -0.5f, 0, 0.5f, 1 };
+	vertices[1].Position = { 0.5f, 0, 0.5f, 1 };
+	vertices[2].Position = { -0.5f, 0, -0.5f, 1 };
+	vertices[3].Position = { -0.5f, 0, -0.5f, 1 };
+	vertices[4].Position = { 0.5f, 0, 0.5f, 1 };
+	vertices[5].Position = { 0.5f, 0, -0.5f, 1 };
+	
+	vertices[0].Normal = {0, 1, 0, 0};
+	vertices[1].Normal = { 0, 1, 0, 0 };
+	vertices[2].Normal = { 0, 1, 0, 0 };
+	vertices[3].Normal = { 0, 1, 0, 0 };
+	vertices[4].Normal = { 0, 1, 0, 0 };
+	vertices[5].Normal = { 0, 1, 0, 0 };
+
+	vertices[0].TexCoord = { 0, 1 }; // bottom left
+	vertices[1].TexCoord = { 1, 1 }; // bottom right
+	vertices[2].TexCoord = { 0, 0 }; // top left
+	vertices[3].TexCoord = { 0, 0 }; // top left
+	vertices[4].TexCoord = { 1, 1 }; // bottom right
+	vertices[5].TexCoord = { 1, 0 }; // top right
+	// fill vertex buffer
+	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex),
+		vertices, GL_STATIC_DRAW);
+	// enable first element as position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	
+	// enable second element as normal
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)16);
+
+	// enable third element as texture
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)32);
+	
+	// unbind buffers
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// quad has 2 triangles
+	triCount = 2;
+}
+
 void Mesh::drawBox(glm::vec3 center, glm::vec3 extents, glm::vec4 colour, glm::mat4* m)
 {
 	Vertex verts[8];
@@ -81,14 +145,14 @@ void Mesh::drawBox(glm::vec3 center, glm::vec3 extents, glm::vec4 colour, glm::m
 		c = glm::vec3(glm::vec3((*m)[3]) + c);
 	}
 
-	verts[0].position = glm::vec4(glm::vec3(extents.x / 2, -extents.y / 2, extents.z / 2), 1);
-	verts[1].position = glm::vec4(glm::vec3(extents.x / 2, -extents.y / 2, -extents.z / 2), 1);
-	verts[2].position = glm::vec4(glm::vec3(-extents.x / 2, -extents.y / 2, -extents.z / 2), 1);
-	verts[3].position = glm::vec4(glm::vec3(-extents.x / 2, -extents.y / 2, extents.z / 2), 1);
-	verts[4].position = glm::vec4(glm::vec3(extents.x / 2, extents.y / 2, extents.z / 2), 1);
-	verts[5].position = glm::vec4(glm::vec3(extents.x / 2, extents.y / 2, -extents.z / 2), 1);
-	verts[6].position = glm::vec4(glm::vec3(-extents.x / 2, extents.y / 2, -extents.z / 2), 1);
-	verts[7].position = glm::vec4(glm::vec3(-extents.x / 2, extents.y / 2, extents.z / 2), 1);
+	verts[0].Position = glm::vec4(glm::vec3(extents.x / 2, -extents.y / 2, extents.z / 2), 1);
+	verts[1].Position = glm::vec4(glm::vec3(extents.x / 2, -extents.y / 2, -extents.z / 2), 1);
+	verts[2].Position = glm::vec4(glm::vec3(-extents.x / 2, -extents.y / 2, -extents.z / 2), 1);
+	verts[3].Position = glm::vec4(glm::vec3(-extents.x / 2, -extents.y / 2, extents.z / 2), 1);
+	verts[4].Position = glm::vec4(glm::vec3(extents.x / 2, extents.y / 2, extents.z / 2), 1);
+	verts[5].Position = glm::vec4(glm::vec3(extents.x / 2, extents.y / 2, -extents.z / 2), 1);
+	verts[6].Position = glm::vec4(glm::vec3(-extents.x / 2, extents.y / 2, -extents.z / 2), 1);
+	verts[7].Position = glm::vec4(glm::vec3(-extents.x / 2, extents.y / 2, extents.z / 2), 1);
 
 	unsigned int indicies[36] = { 
 		0, 1, 2, 2, 0, 3,
@@ -153,9 +217,9 @@ meshData Mesh::getCircleStruct(glm::vec3 center, float radius, int segments, glm
 
 	for (int i = 0; i < vertAmount; i++)
 	{
-		verts[i].position = glm::vec4(center, 1);
-		verts[i].normal = glm::vec4(0.0f, 0.0f, 0.0f, 1);
-		verts[i].texcoord = glm::vec2(0.0f, 0.0f);
+		verts[i].Position = glm::vec4(center, 1);
+		verts[i].Normal = glm::vec4(0.0f, 0.0f, 0.0f, 1);
+		verts[i].TexCoord = glm::vec2(0.0f, 0.0f);
 	}
 
 
@@ -167,7 +231,7 @@ meshData Mesh::getCircleStruct(glm::vec3 center, float radius, int segments, glm
 
 	for (int i = 1; i < vertAmount; i++)
 	{
-		verts[i].position = glm::vec4(sinf((2 * glm::pi<float>()) / segments * i) * radius, center.y, cosf((2 * glm::pi<float>()) / segments * i) * radius, 1);
+		verts[i].Position = glm::vec4(sinf((2 * glm::pi<float>()) / segments * i) * radius, center.y, cosf((2 * glm::pi<float>()) / segments * i) * radius, 1);
 	}
 
 	//segments(works)

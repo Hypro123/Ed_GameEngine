@@ -4,9 +4,9 @@
 
 struct Vertex
 {
-	glm::vec4 position;
-	glm::vec4 normal;
-	glm::vec2 texcoord;
+	glm::vec4 Position;
+	glm::vec4 Normal;
+	glm::vec2 TexCoord;
 };
 
 struct meshData
@@ -24,6 +24,7 @@ public:
 	virtual ~Mesh();
 
 	void initialise(unsigned int vertexCount, const Vertex* verticies, unsigned int indexCount = 0, unsigned int* indicies = nullptr);
+	void initialiseQuad();
 
 	virtual void draw();
 

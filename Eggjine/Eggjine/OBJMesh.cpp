@@ -198,8 +198,7 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 		// set chunk material
 		chunk.materialID = s.mesh.material_ids.empty() ? -1 : s.mesh.material_ids[0];
 
-		meshChunks.push_back(chunk);
-		//meshChunks.emplace_back(std::move(chunk));
+		m_meshChunks.push_back(chunk);
 	}
 	
 	// load obj
