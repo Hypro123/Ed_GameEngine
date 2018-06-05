@@ -1,5 +1,6 @@
 #include "Application.h"
 #include"defines.h"
+#include"Mesh.h"
 
 Application::Application() {}
 
@@ -51,6 +52,7 @@ void Application::run()
 	glEnable(GL_DEPTH_TEST);
 
 	aie::Gizmos::create(10000, 10000, 10000, 10000);
+	Mesh::Create();
 
 	if (startup())
 	{
@@ -91,7 +93,7 @@ void Application::run()
 void Application::terminate()
 {	
 	aie::Gizmos::destroy();
-
+	Mesh::Destroy();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

@@ -1,11 +1,25 @@
 #include "Mesh.h"
 #include<glCore\gl_core_4_5.h>
 
+Mesh* Mesh::m_singleton = nullptr;
+
 Mesh::~Mesh()
 {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 	glDeleteBuffers(1, &ibo);
+}
+
+void Mesh::Create()
+{
+	if(m_singleton == nullptr)
+		m_singleton = new Mesh();
+}
+
+void Mesh::Destroy()
+{
+	delete m_singleton;
+	m_singleton = nullptr;
 }
 
 void Mesh::initialise(unsigned int vertexCount, const Vertex* verticies, unsigned int indexCount, unsigned int* indicies)
@@ -103,7 +117,8 @@ void Mesh::initialiseQuad()
 	vertices[2].TexCoord = { 0, 0 }; // top left
 	vertices[3].TexCoord = { 0, 0 }; // top left
 	vertices[4].TexCoord = { 1, 1 }; // bottom right
-	vertices[5].TexCoord = { 1, 0 }; // top right
+	vertices[5].TexCoord = { 1, 0 }; // top right
+
 	// fill vertex buffer
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex),
 		vertices, GL_STATIC_DRAW);

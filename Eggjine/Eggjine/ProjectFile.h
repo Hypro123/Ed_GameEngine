@@ -50,6 +50,10 @@ protected:
 
 	//ambient light in scene
 	glm::vec3 ambientLight;
+
+	//quaternion testing
+	glm::vec3 m_positions[2];
+	glm::quat m_rotations[2];
 };
 
 #endif

@@ -9,14 +9,20 @@ ProjectFile::~ProjectFile() {}
 
 bool ProjectFile::startup()
 {
-	m_shader.loadShader(aie::eShaderStage::VERTEX, "../shaders/normalmap.vert");
-	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "../shaders/normalmap.frag");
+	//fix oren-nayer
+	m_shader.loadShader(aie::eShaderStage::VERTEX, "../shaders/Oren-Nayer.vert");
+	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "../shaders/Oren-Nayer.frag");
 
 	if (m_shader.link() == false)
 	{
 		printf("shader error %s", m_shader.getLastError());
 		return false;
 	}
+
+	m_positions[0] = glm::vec3(10, 5, 10);
+	m_positions[1] = glm::vec3(-10, 5, -10);
+	m_rotations[0] = glm::quat(glm::vec3(0, -1, 0));
+	m_rotations[1] = glm::quat(glm::vec3(0, 1, 0));
 
 	//if (m_gridTexture.load("../textures/numbered_grid.tga") == false)
 	//{
@@ -69,9 +75,9 @@ bool ProjectFile::startup()
 
 	//light
 	m_light.diffuse = { 1, 0, 1 };
-	m_light.specular = {1, 1, 1};
-	m_light.direction = {-1, -0.5, -1};
-	ambientLight = { 0.75f, 0.75f, 0.75f};
+	m_light.specular = {3, 3, 3};
+	m_light.direction = {-1, 0, -1.5};
+	ambientLight = { 10, 10, 10};
 
 	//camera initialisation
 	fCam = new FlyCamera(window);
@@ -89,7 +95,15 @@ void ProjectFile::update(float deltaTime)
 	fCam->update(deltaTime);
 	m_lTime = glfwGetTime();
 	
-	m_light.direction = glm::vec3(glm::sin(m_lTime * 0.2f), glm::cos(m_lTime * 0.2f), 0);
+	//quaternions
+	//float s = glm::cos(glfwGetTime() * 0.5f + 0.5f);
+	//glm::vec3 p = (1.0f - s) * m_positions[0]; +s * m_positions[1];
+	//glm::quat r = glm::slerp(m_rotations[0], m_rotations[1], s);
+	//glm::mat4 m = glm::translate(p) * glm::toMat4(r);
+	//aie::Gizmos::addTransform(m);
+	//aie::Gizmos::addAABBFilled(p, glm::vec3(2, 2, 2), glm::vec4(1, 0, 0, 1), &m);
+
+	//m_light.direction = glm::vec3(glm::sin(m_lTime * 0.2f), glm::cos(m_lTime * 0.2f), 0);
 }
 
 void ProjectFile::draw()
@@ -120,6 +134,7 @@ void ProjectFile::draw()
 	m_shader.bindUniform("Ia", ambientLight);
 	m_shader.bindUniform("Id", m_light.diffuse);
 	m_shader.bindUniform("Is", m_light.specular);
+	m_shader.bindUniform("roughness", 1);
 
 	//camera and normal mapping
 	auto pvm = fCam->getProjection() * fCam->getView() *  m_SpearTransform;

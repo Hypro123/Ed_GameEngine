@@ -105,7 +105,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +125,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="..\shaders\normalmap.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="Oren-Nayer.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="Oren-Nayer.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

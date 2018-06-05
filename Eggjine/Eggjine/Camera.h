@@ -3,6 +3,8 @@
 
 #include<ext.hpp>
 #include"glfw3.h"
+#include"gtc\quaternion.hpp"
+#include"gtx\quaternion.hpp"
 
 class Camera
 {
