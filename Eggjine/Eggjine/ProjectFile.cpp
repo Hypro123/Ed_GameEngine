@@ -10,8 +10,11 @@ ProjectFile::~ProjectFile() {}
 bool ProjectFile::startup()
 {
 	//fix oren-nayer
-	m_shader.loadShader(aie::eShaderStage::VERTEX, "../shaders/Oren-Nayer.vert");
-	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "../shaders/Oren-Nayer.frag");
+	m_shader.loadShader(aie::eShaderStage::VERTEX, "../shaders/simple.vert");
+	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "../shaders/simple.frag");
+
+	transformsArray = new glm::mat4[3];
+	objs = new aie::OBJMesh[3];
 
 	if (m_shader.link() == false)
 	{
@@ -19,39 +22,43 @@ bool ProjectFile::startup()
 		return false;
 	}
 
-	m_positions[0] = glm::vec3(10, 5, 10);
-	m_positions[1] = glm::vec3(-10, 5, -10);
-	m_rotations[0] = glm::quat(glm::vec3(0, -1, 0));
-	m_rotations[1] = glm::quat(glm::vec3(0, 1, 0));
-
-	//if (m_gridTexture.load("../textures/numbered_grid.tga") == false)
-	//{
-	//	printf("Failed to load texture!\n");
-	//	return false;
-	//}
-
-	//if(m_modelTexture.load("../soulspear/soulspear_specular.tga") == false)
-	//{
-	//	printf("texture failed to load\n");
-	//	return false;
-	//}
-
 	//../soulspear/soulspear.obj
 	//../stanford/Bunny.obj
+	if (m_dragonMesh.load("../stanford/dragon.obj") == false)
+	{
+		printf("Mesh Error!\n");
+		return false;
+	}
+	
+	if (m_RabbitMesh.load("../stanford/Bunny.obj") == false)
+	{
+		printf("Mesh Error!\n");
+		return false;
+	}
+
 	if (m_spearMesh.load("../soulspear/soulspear.obj") == false)
 	{
 		printf("Mesh Error!\n");
 		return false;
 	}
 
-	//if (m_BunnyMesh.load("../stanford/Bunny.obj") == false)
-	//{
-	//	printf("Bunny Mesh Error!\n");
-	//	return false;
-	//}
+	//drawing mesh
+	m_dragonTransform =
+	{
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 10, 1
+	};
 
-	//initialise quad
-	//m_quadmesh.initialiseQuad();
+	//drawing mesh
+	m_rabbitTransform =
+	{
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		10, 0, 0, 1
+	};
 
 	//drawing mesh
 	m_SpearTransform = 
@@ -61,23 +68,25 @@ bool ProjectFile::startup()
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	};
-	
-	//m_BunnyTransform =
-	//{
-	//	1, 0, 0, 0,
-	//	0, 1, 0, 0,
-	//	0, 0, 1, 0,
-	//	0, 0, 0, 1
-	//};
 
-	//material
+	//Object Storage
+	objs[0] = m_dragonMesh;
+	objs[1] = m_spearMesh;
+	objs[2] = m_RabbitMesh;
 
+	//Transforms Storage
+	transformsArray[0] = m_dragonTransform;
+	transformsArray[1] = m_rabbitTransform;
+	transformsArray[2] = m_SpearTransform;
 
 	//light
 	m_light.diffuse = { 1, 0, 1 };
 	m_light.specular = {3, 3, 3};
 	m_light.direction = {-1, 0, -1.5};
 	ambientLight = { 10, 10, 10};
+
+
+
 
 	//camera initialisation
 	fCam = new FlyCamera(window);
@@ -88,6 +97,7 @@ bool ProjectFile::startup()
 void ProjectFile::shutdown()
 {
 	delete fCam;
+	delete transformsArray;
 }
 
 void ProjectFile::update(float deltaTime)
@@ -120,12 +130,9 @@ void ProjectFile::draw()
 			glm::vec3(-10, 0, -10 + i),
 			i == 10 ? white : black);
 	}
-
+	
 	//shaders
 	m_shader.bind();
-
-	//m_shader.bindUniform("diffuseTexture", 0);
-	//m_modelTexture.bind(0);
 
 	//binding
 	m_shader.bindUniform("cameraPosition", fCam->getWorldTransform()[3]);
@@ -134,15 +141,16 @@ void ProjectFile::draw()
 	m_shader.bindUniform("Ia", ambientLight);
 	m_shader.bindUniform("Id", m_light.diffuse);
 	m_shader.bindUniform("Is", m_light.specular);
-	m_shader.bindUniform("roughness", 1);
 
-	//camera and normal mapping
-	auto pvm = fCam->getProjection() * fCam->getView() *  m_SpearTransform;
-	m_shader.bindUniform("ProjectionViewModel", pvm);
-	m_shader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_SpearTransform)));
+	for(int i = 0; i < 3; ++i)
+	{
+		//camera and normal mapping
+		auto pvm = fCam->getProjection() * fCam->getView() *  transformsArray[i];
+		m_shader.bindUniform("ProjectionViewModel", pvm);
 
-	m_spearMesh.draw();
-	//m_BunnyMesh.draw();
+		m_shader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(transformsArray[i])));
+		objs[i].draw();
+	}
 
 	aie::Gizmos::draw(fCam->getProjectionView());
 }

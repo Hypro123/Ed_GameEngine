@@ -57,6 +57,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dependencies\glCore\gl_core_4_5.h">
@@ -107,6 +110,9 @@
     <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\textured.frag">
@@ -131,6 +137,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="Oren-Nayer.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="simplePP.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="simplePP.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

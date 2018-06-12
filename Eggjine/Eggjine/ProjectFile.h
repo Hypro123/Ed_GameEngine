@@ -9,6 +9,7 @@
 #include"Mesh.h"
 #include"OBJMesh.h"
 #include"Texture.h"
+#include"RenderTarget.h"
 
 #include"Light.h"
 
@@ -32,18 +33,17 @@ protected:
 	aie::OBJMesh m_spearMesh;
 	glm::mat4 m_SpearTransform;
 
-	//Bunny
-	//aie::OBJMesh m_BunnyMesh;
-	//glm::mat4 m_BunnyTransform;
-	//aie::Texture m_modelTexture;
+	//Rabbit
+	aie::OBJMesh m_RabbitMesh;
+	glm::mat4 m_rabbitTransform;
+
+	//Dragon
+	aie::OBJMesh m_dragonMesh;
+	glm::mat4 m_dragonTransform;
 
 	//shaders
 	aie::ShaderProgram m_shader;
-
-	//object rendering
-	//Mesh m_quadmesh;
-	//glm::mat4 m_quadtransform;
-	//aie::Texture m_gridTexture;
+	aie::ShaderProgram m_texturedshader;
 
 	float m_lTime;
 	Light m_light;
@@ -51,9 +51,9 @@ protected:
 	//ambient light in scene
 	glm::vec3 ambientLight;
 
-	//quaternion testing
-	glm::vec3 m_positions[2];
-	glm::quat m_rotations[2];
+	//array of objects
+	glm::mat4* transformsArray;
+	aie::OBJMesh* objs;
 };
 
 #endif

@@ -22,6 +22,9 @@ protected:
 
 	double m_deltaMouseX;
 	double m_deltaMouseY;
+
+	//toggle
+	bool canMoveCamera;
 };
 
 #endif

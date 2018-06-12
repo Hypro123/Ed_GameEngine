@@ -27,6 +27,7 @@ public:
 	static void Destroy();
 
 	void initialise(unsigned int vertexCount, const Vertex* verticies, unsigned int indexCount = 0, unsigned int* indicies = nullptr);
+	void initialiseFullscreenQuad();
 	void initialiseQuad();
 
 	void draw();

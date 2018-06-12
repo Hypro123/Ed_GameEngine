@@ -58,7 +58,8 @@ void main() {
 	// DX = sin(alpha) * tan(beta)
 	float alpha = sin( max( acos( NdE ), acos( NdL ) ) );
 	float beta = tan( min( acos( NdE ), acos( NdL ) ) );
-	float DX = alpha * beta;
+	float DX = alpha * beta;
+
 	// calculate lambert term
 	float OrenNayar = NdL * (A + Q * CX * DX);
 	
