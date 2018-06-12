@@ -80,13 +80,10 @@ bool ProjectFile::startup()
 	transformsArray[2] = m_SpearTransform;
 
 	//light
-	m_light.diffuse = { 1, 0, 1 };
+	m_light.diffuse = { 1, 1, 1 };
 	m_light.specular = {3, 3, 3};
 	m_light.direction = {-1, 0, -1.5};
 	ambientLight = { 10, 10, 10};
-
-
-
 
 	//camera initialisation
 	fCam = new FlyCamera(window);
@@ -113,6 +110,9 @@ void ProjectFile::update(float deltaTime)
 	//aie::Gizmos::addTransform(m);
 	//aie::Gizmos::addAABBFilled(p, glm::vec3(2, 2, 2), glm::vec4(1, 0, 0, 1), &m);
 
+	//use quaterneons
+	//m_light.direction = fCam->getWorldTransform()[3] * 1000.0f;
+
 	//m_light.direction = glm::vec3(glm::sin(m_lTime * 0.2f), glm::cos(m_lTime * 0.2f), 0);
 }
 
@@ -137,10 +137,10 @@ void ProjectFile::draw()
 	//binding
 	m_shader.bindUniform("cameraPosition", fCam->getWorldTransform()[3]);
 
-	m_shader.bindUniform("lightDirection", m_light.direction);
-	m_shader.bindUniform("Ia", ambientLight);
-	m_shader.bindUniform("Id", m_light.diffuse);
-	m_shader.bindUniform("Is", m_light.specular);
+		m_shader.bindUniform("lightDirection", m_light.direction);
+		m_shader.bindUniform("Ia", ambientLight);
+		m_shader.bindUniform("Id", m_light.diffuse);
+		m_shader.bindUniform("Is", m_light.specular);
 
 	for(int i = 0; i < 3; ++i)
 	{

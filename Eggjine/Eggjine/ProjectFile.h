@@ -47,6 +47,8 @@ protected:
 
 	float m_lTime;
 	Light m_light;
+	//Light m_lightL;
+	//Light m_lightR;
 
 	//ambient light in scene
 	glm::vec3 ambientLight;
@@ -54,6 +56,7 @@ protected:
 	//array of objects
 	glm::mat4* transformsArray;
 	aie::OBJMesh* objs;
+	//Light* lightsArray;
 };
 
 #endif
