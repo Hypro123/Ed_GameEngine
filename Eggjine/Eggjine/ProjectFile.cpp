@@ -111,7 +111,7 @@ void ProjectFile::update(float deltaTime)
 	//aie::Gizmos::addAABBFilled(p, glm::vec3(2, 2, 2), glm::vec4(1, 0, 0, 1), &m);
 
 	//use quaterneons
-	//m_light.direction = fCam->getWorldTransform()[3] * 1000.0f;
+	m_light.direction = fCam->getWorldTransform()[1] * 1000.0f;
 
 	//m_light.direction = glm::vec3(glm::sin(m_lTime * 0.2f), glm::cos(m_lTime * 0.2f), 0);
 }
