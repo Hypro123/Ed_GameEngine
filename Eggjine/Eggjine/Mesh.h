@@ -34,10 +34,15 @@ public:
 
 	void drawBox(glm::vec3 center, glm::vec3 extents, glm::vec4 colour, glm::mat4* m = nullptr);
 	void drawCylinder(glm::vec3 center, float radius, float height, int segments, glm::vec4 colour, glm::mat4* m = nullptr);
+	
+	
 	void drawPyramid();
 	void drawSphere();
 	void drawCone();
 	void drawGrid();
+
+	glm::mat4 getTransform() { return transformStore; }
+	void setTransform(glm::mat4 m) { transformStore = m; }
 
 	//circle
 	meshData getCircleStruct(glm::vec3 center, float radius, int segments, glm::vec4 colour);
@@ -45,6 +50,8 @@ public:
 protected:
 	unsigned int triCount;
 	unsigned int vao, vbo, ibo;
+
+	glm::mat4 transformStore;
 
 	static Mesh* m_singleton;
 };

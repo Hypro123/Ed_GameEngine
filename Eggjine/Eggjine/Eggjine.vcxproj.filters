@@ -57,8 +57,14 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="RenderTarget.cpp">
-      <Filter>shaders</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +119,15 @@
     <ClInclude Include="RenderTarget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleVertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\textured.frag">
@@ -143,6 +158,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="simplePP.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="simpleParticleShader.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="simpleParticleShader.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

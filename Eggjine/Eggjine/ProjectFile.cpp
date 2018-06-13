@@ -81,9 +81,10 @@ bool ProjectFile::startup()
 
 	//light
 	m_light.diffuse = { 1, 1, 1 };
-	m_light.specular = {3, 3, 3};
+	m_light.specular = {0.9f, 0.1f, 0.1f};
 	m_light.direction = {-1, 0, -1.5};
-	ambientLight = { 10, 10, 10};
+	ambientLight = { 0.1f, 0.1f, 0.1f};
+	m_SpecularPower = 5;
 
 	//camera initialisation
 	fCam = new FlyCamera(window);
@@ -101,19 +102,6 @@ void ProjectFile::update(float deltaTime)
 {
 	fCam->update(deltaTime);
 	m_lTime = glfwGetTime();
-	
-	//quaternions
-	//float s = glm::cos(glfwGetTime() * 0.5f + 0.5f);
-	//glm::vec3 p = (1.0f - s) * m_positions[0]; +s * m_positions[1];
-	//glm::quat r = glm::slerp(m_rotations[0], m_rotations[1], s);
-	//glm::mat4 m = glm::translate(p) * glm::toMat4(r);
-	//aie::Gizmos::addTransform(m);
-	//aie::Gizmos::addAABBFilled(p, glm::vec3(2, 2, 2), glm::vec4(1, 0, 0, 1), &m);
-
-	//use quaterneons
-	m_light.direction = fCam->getWorldTransform()[1] * 1000.0f;
-
-	//m_light.direction = glm::vec3(glm::sin(m_lTime * 0.2f), glm::cos(m_lTime * 0.2f), 0);
 }
 
 void ProjectFile::draw()
@@ -141,6 +129,8 @@ void ProjectFile::draw()
 		m_shader.bindUniform("Ia", ambientLight);
 		m_shader.bindUniform("Id", m_light.diffuse);
 		m_shader.bindUniform("Is", m_light.specular);
+		m_shader.bindUniform("specularPower", m_SpecularPower);
+
 
 	for(int i = 0; i < 3; ++i)
 	{

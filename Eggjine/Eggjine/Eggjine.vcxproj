@@ -132,10 +132,12 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Gizmos.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OBJMesh.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="Planetoid.cpp" />
     <ClCompile Include="ProjectFile.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
@@ -149,10 +151,13 @@
     <ClInclude Include="defines.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FlyCamera.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Gizmos.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="OBJMesh.h" />
+    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="ParticleVertex.h" />
     <ClInclude Include="Planetoid.h" />
     <ClInclude Include="ProjectFile.h" />
     <ClInclude Include="RenderTarget.h" />
@@ -170,6 +175,8 @@
     <None Include="..\shaders\textured.vert" />
     <None Include="Oren-Nayer.frag" />
     <None Include="Oren-Nayer.vert" />
+    <None Include="simpleParticleShader.frag" />
+    <None Include="simpleParticleShader.vert" />
     <None Include="simplePP.frag" />
     <None Include="simplePP.vert" />
   </ItemGroup>

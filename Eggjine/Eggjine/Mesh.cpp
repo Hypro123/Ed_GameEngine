@@ -176,6 +176,8 @@ void Mesh::initialiseQuad()
 
 void Mesh::drawBox(glm::vec3 center, glm::vec3 extents, glm::vec4 colour, glm::mat4* m)
 {
+	transformStore = *m;
+
 	Vertex verts[8];
 	glm::vec3 c = center;
 	
