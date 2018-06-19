@@ -86,7 +86,8 @@ void ParticleEmitter::initialise(unsigned int a_maxParticles,
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		delete[] indexData;
+		delete[] indexData;
+
 }
 
 void ParticleEmitter::emit() {

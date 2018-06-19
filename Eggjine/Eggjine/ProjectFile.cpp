@@ -11,8 +11,10 @@ bool ProjectFile::startup()
 {
 	//fix oren-nayer
 	m_shader.loadShader(aie::eShaderStage::VERTEX, "../shaders/simple.vert");
+	m_texturedshader.loadShader(aie::eShaderStage::VERTEX, "../shaders/normalmap.vert");
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "../shaders/simple.frag");
-
+	m_texturedshader.loadShader(aie::eShaderStage::FRAGMENT, "../shaders/normalmap.frag");
+	
 	transformsArray = new glm::mat4[3];
 	objs = new aie::OBJMesh[3];
 
@@ -21,6 +23,14 @@ bool ProjectFile::startup()
 		printf("shader error %s", m_shader.getLastError());
 		return false;
 	}
+	int H;
+	int W;
+	glfwGetWindowSize(window, &W, &H);
+
+	if (m_renderTarget.initialise(1, W, H) == false) {
+		printf("Render Target Error!\n");
+		return false;
+	}
 
 	//../soulspear/soulspear.obj
 	//../stanford/Bunny.obj
@@ -86,6 +96,19 @@ bool ProjectFile::startup()
 	ambientLight = { 0.1f, 0.1f, 0.1f};
 	m_SpecularPower = 5;
 
+	m_GSpear = new GameObject(&m_spearMesh, fCam, &m_shader);
+	m_GSpear->SetTransform(m_SpearTransform);
+	m_GSpear->CreateLight(m_light, ambientLight);
+	
+	m_GRabbit = new GameObject(&m_RabbitMesh, fCam, &m_shader);
+	m_GRabbit->SetTransform(m_rabbitTransform);
+	m_GRabbit->CreateLight(m_light, ambientLight);
+	
+	m_GDragon = new GameObject(&m_dragonMesh, fCam, &m_shader);
+	m_GDragon->SetTransform(m_dragonTransform);
+	m_GDragon->CreateLight(m_light, ambientLight);
+
+
 	//camera initialisation
 	fCam = new FlyCamera(window);
 	
@@ -119,28 +142,31 @@ void ProjectFile::draw()
 			i == 10 ? white : black);
 	}
 	
-	//shaders
-	m_shader.bind();
+	m_GRabbit->update(fCam, &m_renderTarget);
+	m_GSpear->drawNormal(fCam, &m_renderTarget);
+	//m_GDragon->update(fCam, m_renderTarget);
 
-	//binding
-	m_shader.bindUniform("cameraPosition", fCam->getWorldTransform()[3]);
+	////shaders
+	//m_shader.bind();
 
-		m_shader.bindUniform("lightDirection", m_light.direction);
-		m_shader.bindUniform("Ia", ambientLight);
-		m_shader.bindUniform("Id", m_light.diffuse);
-		m_shader.bindUniform("Is", m_light.specular);
-		m_shader.bindUniform("specularPower", m_SpecularPower);
+	////binding
+	//m_shader.bindUniform("cameraPosition", fCam->getWorldTransform()[3]);
 
+	//m_shader.bindUniform("lightDirection", m_light.direction);
+	//m_shader.bindUniform("Ia", ambientLight);
+	//m_shader.bindUniform("Id", m_light.diffuse);
+	//m_shader.bindUniform("Is", m_light.specular);
+	//m_shader.bindUniform("specularPower", m_SpecularPower);
 
-	for(int i = 0; i < 3; ++i)
-	{
-		//camera and normal mapping
-		auto pvm = fCam->getProjection() * fCam->getView() *  transformsArray[i];
-		m_shader.bindUniform("ProjectionViewModel", pvm);
+	//for(int i = 0; i < 3; ++i)
+	//{
+	//	//camera and normal mapping
+	//	auto pvm = fCam->getProjection() * fCam->getView() *  transformsArray[i];
+	//	m_shader.bindUniform("ProjectionViewModel", pvm);
 
-		m_shader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(transformsArray[i])));
-		objs[i].draw();
-	}
+	//	m_shader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(transformsArray[i])));
+	//	objs[i].draw();
+	//}
 
 	aie::Gizmos::draw(fCam->getProjectionView());
 }

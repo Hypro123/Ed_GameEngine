@@ -1,18 +1,7 @@
 #include "GameObject.h"
 
-
-
-GameObject::GameObject(Mesh* m, FlyCamera *c, aie::ShaderProgram* s)
-{
-	m_myMesh = m;
-	m_shaderReference = s;
-	camReference = c;
-	m_myImportedMesh = nullptr;
-}
-
 GameObject::GameObject(aie::OBJMesh* m, FlyCamera *c, aie::ShaderProgram* s)
 {
-	m_myMesh = nullptr;
 	m_shaderReference = s;
 	camReference = c;
 	m_myImportedMesh = m;
@@ -22,11 +11,7 @@ GameObject::~GameObject()
 {
 	delete m_shaderReference;
 	delete camReference;
-	
-	if (m_myMesh != nullptr)
-		delete m_myMesh;
-	else
-		delete m_myImportedMesh;
+	delete m_myImportedMesh;
 
 	lightsList.clear();
 }
@@ -42,8 +27,16 @@ void GameObject::CreateLight(glm::vec3 lightDirection, glm::vec3 lightDiffuse, g
 	lightsList.push_back(l);
 }
 
-void GameObject::update()
+void GameObject::CreateLight(Light l, glm::vec3 amb)
 {
+	ambientLight = amb;
+	lightsList.push_back(l);
+}
+
+void GameObject::update(FlyCamera* f, aie::RenderTarget* rt)
+{
+	rt->bind();
+	camReference = f;
 	m_shaderReference->bind();
 	m_shaderReference->bindUniform("cameraPosition", camReference->getWorldTransform()[3]);
 
@@ -57,15 +50,20 @@ void GameObject::update()
 		auto pvm = camReference->getProjection() * camReference->getView() * m_transform;
 		m_shaderReference->bindUniform("ProjectionViewModel", pvm);
 
-		if (m_myMesh != nullptr)
-		{
-			m_shaderReference->bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_transform)));
-			m_myMesh->draw();
-		}
-		else
-		{
-			m_shaderReference->bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_transform)));
-			m_myImportedMesh->draw();
-		}
+		m_shaderReference->bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_transform)));
+		m_myImportedMesh->draw();
 	}
+	rt->unbind();
+
+}
+
+void GameObject::drawNormal(FlyCamera* f, aie::RenderTarget* rt)
+{
+	camReference = f;
+	m_shaderReference->bind();
+	auto pvm = camReference->getProjection() * camReference->getView() * m_transform;
+	m_shaderReference->bindUniform("ProjectionViewModel", pvm);
+	m_shaderReference->bindUniform("diffuseTexture", 0);
+	rt->getTarget(0).bind(0);
+	m_myImportedMesh->draw();
 }

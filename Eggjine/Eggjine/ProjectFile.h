@@ -13,6 +13,8 @@
 
 #include"Light.h"
 
+#include"GameObject.h"
+
 class ProjectFile : public Application
 {
 public:
@@ -32,18 +34,22 @@ protected:
 	//soulspear
 	aie::OBJMesh m_spearMesh;
 	glm::mat4 m_SpearTransform;
+	GameObject* m_GSpear;
 
 	//Rabbit
 	aie::OBJMesh m_RabbitMesh;
 	glm::mat4 m_rabbitTransform;
-
+	GameObject* m_GRabbit;
+	
 	//Dragon
 	aie::OBJMesh m_dragonMesh;
 	glm::mat4 m_dragonTransform;
-
+	GameObject* m_GDragon;
+	
 	//shaders
 	aie::ShaderProgram m_shader;
 	aie::ShaderProgram m_texturedshader;
+	aie::RenderTarget m_renderTarget;
 
 	float m_lTime;
 	Light m_light;

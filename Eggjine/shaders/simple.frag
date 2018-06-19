@@ -3,15 +3,21 @@
 in vec4 vPosition;
 in vec3 vNormal;
 
-out vec4 FragColour;
+out vec4 FragColor;
 
 uniform sampler2D diffuseTexture; //sampled colour
 
 uniform vec3 Ia; //ambient light
 
+//main light
 uniform vec3 Id; //diffuse
 uniform vec3 Is; //specular
 uniform vec3 lightDirection; //direction
+
+//secondary light
+uniform vec3 Id1; //diffuse
+uniform vec3 Is1; //specular
+uniform vec3 lightDirection1; //direction
 
 uniform vec3 Ka; //ambient material colour
 uniform vec3 Kd; //diffuse material colour
@@ -24,6 +30,7 @@ void main()
 {
 	vec3 N = normalize(vNormal);
 	vec3 L = normalize(lightDirection);
+	vec3 L1 = normalize(lightDirection1);
 
 	//calculate lambert term
 	float lambertTerm = max(0, min(1, dot(N, -L)));
@@ -39,5 +46,5 @@ void main()
 	vec3 specular = Is * Ks * specularTerm;
 
 	//output lambert as greyscale
-	FragColour = vec4(ambient + diffuse + specular, 1);
+	FragColor = vec4(ambient + diffuse + specular, 1);
 }
