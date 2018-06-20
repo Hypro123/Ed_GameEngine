@@ -1,0 +1,2 @@
+ADD:
+	- Light must contain all light variables

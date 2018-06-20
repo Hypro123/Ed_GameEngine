@@ -16,11 +16,11 @@ public:
 	GameObject(aie::OBJMesh*, FlyCamera*, aie::ShaderProgram*);
 	~GameObject();
 
-	void CreateLight(glm::vec3 lightDirection, glm::vec3 lightDiffuse, glm::vec3 lightSpecular, glm::vec3 ambLight);
-	void CreateLight(Light l, glm::vec3 amb);
+	void CreateLight(glm::vec3 lightDirection, glm::vec3 lightDiffuse, glm::vec3 lightSpecular, glm::vec3 ambLight, float m_SpecularPower);
+	void CreateLight(Light l, glm::vec3 amb, float m_SpecularPower);
 	
-	void update(FlyCamera*, aie::RenderTarget*);
-	void drawNormal(FlyCamera* f, aie::RenderTarget*);
+	void draw(FlyCamera*, aie::ShaderProgram*);
+	//void drawNormal(FlyCamera* f, aie::RenderTarget*);
 
 	glm::mat4 getTransform() { return m_transform; }
 	void SetTransform(glm::mat4 m) { m_transform = m; }
@@ -35,5 +35,6 @@ private:
 	//lights
 	std::vector<Light> lightsList;
 	glm::vec3 ambientLight;
+	float m_specLight;
 };
 #endif

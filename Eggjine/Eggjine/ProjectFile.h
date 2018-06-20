@@ -34,17 +34,17 @@ protected:
 	//soulspear
 	aie::OBJMesh m_spearMesh;
 	glm::mat4 m_SpearTransform;
-	//GameObject* m_GSpear;
+	GameObject* m_GSpear;
 
 	//Rabbit
-	//aie::OBJMesh m_RabbitMesh;
-	//glm::mat4 m_rabbitTransform;
-	//GameObject* m_GRabbit;
+	aie::OBJMesh m_RabbitMesh;
+	glm::mat4 m_rabbitTransform;
+	GameObject* m_GRabbit;
 	
 	//Dragon
 	aie::OBJMesh m_dragonMesh;
 	glm::mat4 m_dragonTransform;
-	//GameObject* m_GDragon;
+	GameObject* m_GDragon;
 	
 	//shaders
 	aie::ShaderProgram m_shader;
@@ -58,10 +58,15 @@ protected:
 	float m_lTime;
 	Light m_light;
 	Light m_light1;
+	Light m_light2;
 
 	//ambient light in scene
 	glm::vec3 ambientLight;
 	float m_SpecularPower;
+	glm::vec3 ambientLight1;
+	float m_SpecularPower1;
+	glm::vec3 ambientLight2;
+	float m_SpecularPower2;
 
 	//array of objects
 	//glm::mat4* transformsArray;
