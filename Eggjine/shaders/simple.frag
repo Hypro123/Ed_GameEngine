@@ -14,11 +14,6 @@ uniform vec3 Id; //diffuse
 uniform vec3 Is; //specular
 uniform vec3 lightDirection; //direction
 
-//secondary light
-uniform vec3 Id1; //diffuse
-uniform vec3 Is1; //specular
-uniform vec3 lightDirection1; //direction
-
 uniform vec3 Ka; //ambient material colour
 uniform vec3 Kd; //diffuse material colour
 uniform vec3 Ks; //speculat material Colour
@@ -30,7 +25,6 @@ void main()
 {
 	vec3 N = normalize(vNormal);
 	vec3 L = normalize(lightDirection);
-	vec3 L1 = normalize(lightDirection1);
 
 	//calculate lambert term
 	float lambertTerm = max(0, min(1, dot(N, -L)));

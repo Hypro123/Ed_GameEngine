@@ -154,16 +154,16 @@
     <None Include="Oren-Nayer.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="simplePP.vert">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="simplePP.frag">
-      <Filter>shaders</Filter>
-    </None>
     <None Include="simpleParticleShader.vert">
       <Filter>shaders</Filter>
     </None>
     <None Include="simpleParticleShader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\simplePP.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\simplePP.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

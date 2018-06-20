@@ -34,33 +34,38 @@ protected:
 	//soulspear
 	aie::OBJMesh m_spearMesh;
 	glm::mat4 m_SpearTransform;
-	GameObject* m_GSpear;
+	//GameObject* m_GSpear;
 
 	//Rabbit
-	aie::OBJMesh m_RabbitMesh;
-	glm::mat4 m_rabbitTransform;
-	GameObject* m_GRabbit;
+	//aie::OBJMesh m_RabbitMesh;
+	//glm::mat4 m_rabbitTransform;
+	//GameObject* m_GRabbit;
 	
 	//Dragon
 	aie::OBJMesh m_dragonMesh;
 	glm::mat4 m_dragonTransform;
-	GameObject* m_GDragon;
+	//GameObject* m_GDragon;
 	
 	//shaders
 	aie::ShaderProgram m_shader;
 	aie::ShaderProgram m_texturedshader;
+	aie::ShaderProgram m_spearshader;
 	aie::RenderTarget m_renderTarget;
+
+	//fullscreen Quad
+	Mesh m_fullscreenQuad;
 
 	float m_lTime;
 	Light m_light;
+	Light m_light1;
 
 	//ambient light in scene
 	glm::vec3 ambientLight;
 	float m_SpecularPower;
 
 	//array of objects
-	glm::mat4* transformsArray;
-	aie::OBJMesh* objs;
+	//glm::mat4* transformsArray;
+	//aie::OBJMesh* objs;
 };
 
 #endif
